@@ -39,7 +39,7 @@ class login extends Component {
                 res = res.data;
                 if (res.success){
                     this.setState({message:null});
-                    sessionStorage.setItem('user', res.user);
+                    localStorage.setItem('user', JSON.stringify(res.user));
                     this.props.history.push(`/signup`);
                 }else
                 {

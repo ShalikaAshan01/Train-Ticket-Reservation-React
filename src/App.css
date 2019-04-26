@@ -55,3 +55,44 @@
   background-color: #29b6f6;
   color: white;
 }
+.msg-success{
+  border-color: #69f0ae;
+  background-color: #00c853;
+  color: white;
+}
+.checkbox-span{
+  margin-left: 12px;
+}
+.mt-5{
+  margin-top: 15px;
+}
+.ml-5{
+  margin-left: 15px;
+}
+.font-bold{
+  font-weight: bold;
+}
+.container{
+  margin-top: 10px !important;
+}
+.inline{
+  display: inline-block;
+  position: fixed;
+}
+.inp-icon-check{
+  background: url("/icon/check.png")no-repeat 100%;
+  background-size: 16px;
+}
+.inp-icon-wrong{
+  background: url("/icon/wrong-emo.svg")no-repeat 100%;
+  background-size: 16px;
+}
+#submit-orange:disabled{
+  background-color: #dd2c00  !important;
+  color: wheat !important;
+  cursor: not-allowed !important;
+  opacity: 0.65;
+}
+table.highlight>tbody>tr:hover {
+  background-color: rgba(194, 206, 23, 0.5) !important;
+}

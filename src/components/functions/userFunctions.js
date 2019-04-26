@@ -13,9 +13,14 @@ export const signupFunction = async newUser =>{
 };
 export const signinFunction = async data =>{
     return await axios
-        .post(' http://localhost:3000/users/signin', {
+        .post('http://localhost:3000/users/signin', {
             email: data.email,
             password: data.password,
         });
 
+};
+
+export const validateUser = async data=>{
+    return await axios
+        .post('http://localhost:3000/users/'+data._id+"/"+data._token,{})
 };
