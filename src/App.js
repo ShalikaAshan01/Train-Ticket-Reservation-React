@@ -12,6 +12,7 @@ import editLine from "./components/admins/editLine";
 import showRoutes from "./components/showRoute";
 import Navbar from "./components/Navbar";
 import home from "./components/home";
+import reservation from "./components/reservation/reservation";
 
 
 class App extends Component {
@@ -27,6 +28,7 @@ class App extends Component {
                     <Route exact path="/admin/line/add" component={addLine}/>
                     <Route exact path="/admin/line/edit" component={editLine}/>
                     <Route exact path="/line" component={showRoutes}/>
+                    <Route exact path="/reservation" component={reservation}/>
                 </Router>
             </div>
         );

@@ -87,6 +87,10 @@
   background: url("/icon/wrong-emo.svg")no-repeat 100%;
   background-size: 16px;
 }
+.inp-icon-dialog{
+  background: url("/icon/dialog.png")no-repeat 100%;
+  background-size: 18px;
+}
 #submit-orange:disabled{
   background-color: #dd2c00  !important;
   color: wheat !important;
@@ -95,4 +99,7 @@
 }
 table.highlight>tbody>tr:hover {
   background-color: rgba(194, 206, 23, 0.5) !important;
+}
+.font-italic{
+  font-style: italic !important;
 }

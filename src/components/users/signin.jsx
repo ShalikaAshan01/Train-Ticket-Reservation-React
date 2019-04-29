@@ -11,8 +11,8 @@ class login extends Component {
         M.AutoInit();
     }
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             email: '',
             password: '',

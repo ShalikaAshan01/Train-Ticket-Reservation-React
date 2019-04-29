@@ -4,6 +4,8 @@ import M from 'materialize-css'
 import {showRoutes} from './functions/trainRouteFunctions'
 import {fn_checkAvailability} from './functions/trainFunctions'
 import {Link} from 'react-router-dom'
+import {fn_addSchedule, fn_getSpecificSchedule} from "./functions/scheduleFunctions";
+import swal from '@sweetalert/with-react'
 
 class home extends Component {
 
@@ -12,20 +14,75 @@ class home extends Component {
         this.state = {
             stationList: [],
             trainList: [],
-            class: "A",
             departure: "Colombo",
             arrival: "Badulla",
-            seats: "1",
             date: "Today",
             time: "Now",
             isAutoDeparture: true,
             isAutoArrival: true,
             modal: {header: "", body: ""},
-            checkResult:{trainList:[],isActive:false}
+            button: {check: "Check"},
+            checkResult: {trainList: [], isActive: false,},
+            availableSeats: {A: "", B: "", C: ""}
+
         };
         this.onChange = this.onChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        this.onClickRow = this.onClickRow.bind(this);
     }
+
+
+    //handle modal onClick
+    onClickRow = (parameter, event) => {
+        let train = this.state.checkResult.trainList[parameter];
+        let data = {
+            _tid: train._id,
+            date: moment(new Date(this.state.date)).format("MM-DD-YYYY"),
+        };
+
+        fn_getSpecificSchedule(data).then(data => {
+            let schedule = data.data.schedule;
+
+
+            this.setState({
+                availableSeats: {
+                    A: schedule.availableSeats.A,
+                    B: schedule.availableSeats.B,
+                    C: schedule.availableSeats.C,
+                }
+            },()=>{
+
+                swal({
+                    text: "Available Seat Information",
+                    buttons: {
+                        cancel: "Close",
+                        ok: "Proceed",
+                    },
+                    content: (
+                        <div>
+                            <div className="left-align"><b>Class A:</b>{this.state.availableSeats.A}</div><br/>
+                            <div className="left-align"><b>Class B:</b>{this.state.availableSeats.B}</div><br/>
+                            <div className="left-align"><b>Class C:</b>{this.state.availableSeats.C}</div>
+                        </div>
+                    )
+                }).then(value=>{
+                    if(value==="ok"){
+                        this.props.history.push({
+                                pathname : '/reservation',
+                                state :{
+                                    trainID : train._id,
+                                    date: this.state.date,
+                                }
+                            }
+                        );
+                    }
+                })
+
+            });
+        }).catch(err => {
+            swal("Internal Error!", "Something went wrong!", "error");
+        });
+    };
 
     componentDidMount() {
 
@@ -80,55 +137,73 @@ class home extends Component {
     }
 
     onChange(e) {
-        this.setState({[e.target.name]: e.target.value, message: null, error: null});
-        if (e.target.name === "arrival")
-            this.setState({isAutoArrival: false});
-        if (e.target.name === "departure")
-            this.setState({isAutoDeparture: false});
+        this.setState({
+            [e.target.name]: e.target.value,
+            message: null, error: null,
+            isAutoArrival: e.target.name !== "arrival",
+            isAutoDeparture: e.target.name !== "departure"
+        });
     }
 
-    handleSelectChange = (event) => {
-        this.setState({
-            class: event.target.value
-        })
-    };
-
     onSubmit(e) {
+        this.setState({
+            button: {check: "Checking"}
+        });
         e.preventDefault();
 
-        const instance =M.Modal.getInstance(document.querySelector('#modal1'));
+        const instance = M.Modal.getInstance(document.querySelector('#modal1'));
 
         let data = {
             departure: this.state.departure,
             arrival: this.state.arrival,
-            seats: this.state.seats,
             time: this.state.time,
-            class: this.state.class,
         };
 
         if (this.state.date === "Today") {
             data.date = moment().format('MM/DD/YYYY');
-            data.day = moment().format('dddd')
+            data.day = moment().format('dddd');
+            this.setState({
+                date: moment(new Date(),).format('MM/DD/YYYY')
+            })
         } else {
-            let date = this.state.date;
+            let date = new Date(this.state.date);
+
             data.date = moment(date).format('MM/DD/YYYY');
-            data.day = moment(date).format('dddd')
+            data.day = moment(date).format('dddd');
+            this.setState({
+                date: moment(date).format('MM/DD/YYYY')
+            })
         }
 
         fn_checkAvailability(data).then(res => {
             let data = res.data;
             this.setState({
-                checkResult:{
-                    trainList:data.trains,
-                    isActive: true
+                checkResult: {
+                    trainList: data.trains,
+                    isActive: true,
                 },
-                modal:{
-                    header:"Train Schedule (" + data.trains.length + " Results Found)",
-                    body:"Please Select..."}
+                button: {
+                    check: "Check"
+                },
+                modal: {
+                    header: "Train Schedule (" + data.trains.length + " Results Found)",
+                    body: "Please Select..."
+                }
             });
             instance.open();
         }).catch(err => {
-            this.setState({checkResult:{isActive:false},modal:{header: "Train Schedule (0 Result Found)",body:"No Result Found"}});
+            this.setState({
+                checkResult: {
+                    isActive: false
+                },
+                modal: {
+                    header: "Train Schedule (0 Result Found)",
+                    body: "No Result Found"
+                },
+                button: {
+                    check: "Check"
+                }
+            });
             instance.open();
         })
 
@@ -194,13 +269,6 @@ class home extends Component {
                                         <label htmlFor="arrival">Station of Arrival</label>
                                     </div>
 
-
-                                    <div className={"col s2 input-field"}>
-                                        <i className="material-icons prefix">group</i>
-                                        <label htmlFor="seats">No. of Seats</label>
-                                        <input type="number" min={1} className="validate" id="seats"
-                                               value={this.state.seats} onChange={this.onChange} required={required}/>
-                                    </div>
                                 </div>
 
                                 <div className={"row"}>
@@ -216,23 +284,12 @@ class home extends Component {
                                         <input type="text" className="timepicker" id="time"
                                                value={this.state.time} onChange={this.onChange} required={required}/>
                                     </div>
-                                    <div className="input-field col s2">
-                                        <i className="material-icons prefix">class</i>
-                                        <select required={required} defaultValue={'class'}
-                                                onChange={this.handleSelectChange}>
-                                            <option value="class" disabled>Select</option>
-                                            <option value="A">Class A</option>
-                                            <option value="B">Class B</option>
-                                            <option value="C">Class C</option>
-                                        </select>
-                                        <label>Class</label>
-                                    </div>
-                                    <div className={"col s5 "}>
+                                    <div className={"col s4 "}>
                                         <button type='submit'
                                                 className='col s12 btn btn-large deep-orange accent-3 z-depth-1-half'
                                                 id="submit-orange"
                                                 disabled={!(this.state.isAutoArrival && this.state.isAutoDeparture)}>
-                                            Check
+                                            {this.state.button.check}
                                         </button>
                                     </div>
 
@@ -242,7 +299,7 @@ class home extends Component {
                         </div>
                     </div>
                 </div>
-                {/*Modal Structure */}
+                {/*Modal Structure Show Results*/}
                 <div id="modal1" className="modal modal-fixed-footer">
                     <div className="modal-content">
                         <h4>{this.state.modal.header}</h4>
@@ -260,43 +317,68 @@ class home extends Component {
                                     <th>{this.state.arrival}</th>
                                     <th>Line</th>
                                     <th>Type</th>
-                                    <th>Available Seats(A)</th>
-                                    <th>Available Seats(B)</th>
-                                    <th>Available Seats(C)</th>
+                                    <th>Available Classes</th>
                                 </tr>
                                 </thead>
 
                                 <tbody>
-                                    {this.state.checkResult.trainList.map(function (item, index) {
-                                        let departureObj = item.stations.filter(obj => {
-                                            return obj.station === context.state.departure
-                                        });
-                                        let arrivalObj = item.stations.filter(obj => {
-                                            return obj.station === context.state.arrival
-                                        });
+                                {this.state.checkResult.trainList.map(function (item, index) {
+                                    let departureObj = item.stations.filter(obj => {
+                                        return obj.station === context.state.departure
+                                    });
+                                    let arrivalObj = item.stations.filter(obj => {
+                                        return obj.station === context.state.arrival
+                                    });
 
-                                        return(
-                                            <tr key={index}>
-                                                <td>{item.trainName}</td>
-                                                <td>{item.from}</td>
-                                                <td>{item.to}</td>
-                                                <td>{departureObj[0].time}</td>
-                                                <td>{arrivalObj[0].time}</td>
-                                                <td>{item.line}</td>
-                                                <td>{item.type}</td>
-                                                <td>{item.seats.A}</td>
-                                                <td>{item.seats.B}</td>
-                                                <td>{item.seats.C}</td>
-                                            </tr>
-                                        );
-                                    })}
+                                    let fromObj = item.stations.filter(obj => {
+                                        return obj.station === item.from
+                                    });
+                                    let toObj = item.stations.filter(obj => {
+                                        return obj.station === item.to
+                                    });
+
+
+                                    //if schedule is not selected then create new one and also return available seats
+
+                                    let date = context.state.date;
+
+                                    let data = {
+                                        trainID: item._id,
+                                        trainName: item.trainName,
+                                        date: date,
+                                        from: fromObj[0],
+                                        to: toObj[0],
+                                        A: item.seats.A,
+                                        B: item.seats.B,
+                                        C: item.seats.C,
+                                    };
+                                    fn_addSchedule(data).then(data => {
+                                    }).catch(err => {
+                                    });
+                                    return (
+                                        <tr key={index} onClick={context.onClickRow.bind(this, index)}>
+                                            <td>{item.trainName}</td>
+                                            <td>{item.from}</td>
+                                            <td>{item.to}</td>
+                                            <td>{departureObj[0].time}</td>
+                                            <td>{arrivalObj[0].time}</td>
+                                            <td>{item.line}</td>
+                                            <td>{item.type}</td>
+                                            <td>
+                                                {item.seats.A !== "0" ? 'A ' : ''}
+                                                {item.seats.C !== "0" ? 'B ' : ''}
+                                                {item.seats.B !== "0" ? 'C ' : ''}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                                 </tbody>
                             </table>
 
-                            :''}
+                            : ''}
                     </div>
                     <div className="modal-footer">
-                        <Link to="#!" className="modal-close waves-effect waves-green btn-flat">Close</Link>
+                        <Link to="" className="modal-close waves-effect waves-green btn-flat">Close</Link>
                     </div>
                 </div>
             </div>
