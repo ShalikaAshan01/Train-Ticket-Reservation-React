@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom'
 
 class login extends Component {
     componentDidMount() {
+        document.title="Signin";
         // Auto initialize all the things!
         M.AutoInit();
     }
@@ -40,7 +41,9 @@ class login extends Component {
                 if (res.success){
                     this.setState({message:null});
                     localStorage.setItem('user', JSON.stringify(res.user));
-                    this.props.history.push(`/signup`);
+                    let to = this.props.location.state!==undefined ? this.props.location.state.from : '/';
+                    this.props.history.push(to);
+
                 }else
                 {
                     this.setState({message:res.message});
@@ -51,11 +54,12 @@ class login extends Component {
 
     render() {
         return (
-            <div className="container">
+            <div>
 
 
                 <div className="row valign-wrapper">
-                    <div className="col s6 offset-s3 valign m6 offset-m3">
+                    <div className="col s2"> </div>
+                    <div className="col s8 offset-s3 valign m8">
                         <div className="card z-depth-1 grey lighten-4">
                             <div className="card-content">
 
@@ -112,6 +116,7 @@ class login extends Component {
                             </div>
                         </div>
                     </div>
+                    <div className="col s2"> </div>
                 </div>
             </div>
         )

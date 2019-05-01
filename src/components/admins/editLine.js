@@ -80,7 +80,7 @@ class editLine extends Component {
 
     render() {
         return (
-            <div className="container">
+            <div>
 
                 <div className="input-field col s12">
                     <i className="material-icons prefix">search</i>

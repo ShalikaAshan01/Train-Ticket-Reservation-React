@@ -183,7 +183,8 @@ class login extends Component{
           <div className="container">
 
             <div className="row valign-wrapper">
-              <div className="col s6 offset-s3 valign m6 offset-m3">
+                <div className="col s2"> </div>
+                <div className="col s8 valign m8">
                 <div className="card z-depth-1 grey lighten-4">
                   <div className="card-content">
 
@@ -291,6 +292,8 @@ class login extends Component{
                   </div>
                 </div>
               </div>
+                <div className="col s2"> </div>
+
             </div>
           </div>
         )

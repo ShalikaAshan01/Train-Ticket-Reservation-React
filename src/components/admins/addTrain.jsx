@@ -142,7 +142,7 @@ class addTrain extends Component {
                 console.log(res)
             }).catch(err=>{
                 console.log(err)
-        })
+        });
 
         console.log(data);
     }
@@ -150,7 +150,7 @@ class addTrain extends Component {
     render() {
         var required = false;
         return (
-            <div className="container">
+            <div>
                 <div className="row">
                     <form className="col s12" onSubmit={this.onSubmit}>
                         <div className="row">

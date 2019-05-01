@@ -103,3 +103,6 @@ table.highlight>tbody>tr:hover {
 .font-italic{
   font-style: italic !important;
 }
+.mt-50{
+  margin-top: 50px;
+}

@@ -72,6 +72,9 @@ class home extends Component {
                                 state :{
                                     trainID : train._id,
                                     date: this.state.date,
+                                    departure:this.state.departure,
+                                    arrival:this.state.arrival,
+                                    type:this.state.checkResult.trainList[parameter].type
                                 }
                             }
                         );
@@ -156,7 +159,6 @@ class home extends Component {
         let data = {
             departure: this.state.departure,
             arrival: this.state.arrival,
-            time: this.state.time,
         };
 
         if (this.state.date === "Today") {
@@ -245,13 +247,13 @@ class home extends Component {
 
         var required = true;
         return (
-            <div className={"container"}>
+            <div>
                 <div className="col s12 m12 z-depth-3">
                     <div className="card grey lighten-5">
                         <div className="card-content  text-blue-grey text-darken-4">
                             <form onSubmit={this.onSubmit}>
                                 <div className={"row"}>
-                                    <div className="input-field col s5">
+                                    <div className="input-field col s6">
                                         <i className="material-icons prefix">transfer_within_a_station</i>
                                         <input id="departure" type="text"
                                                className={`autocomplete ${this.state.isAutoDeparture ? 'inp-icon-check' : 'inp-icon-wrong'}`}
@@ -260,7 +262,7 @@ class home extends Component {
                                                onChange={this.onChange}/>
                                         <label htmlFor="departure">Station of Departure</label>
                                     </div>
-                                    <div className="input-field col s5">
+                                    <div className="input-field col s6">
                                         <i className="material-icons prefix">train</i>
                                         <input id="arrival" type="text"
                                                className={`autocomplete ${this.state.isAutoArrival ? 'inp-icon-check' : 'inp-icon-wrong'}`}
@@ -272,19 +274,19 @@ class home extends Component {
                                 </div>
 
                                 <div className={"row"}>
-                                    <div className={"col s3 input-field"}>
+                                    <div className={"col s6 input-field"}>
                                         <label htmlFor="date">When</label>
                                         <i className="material-icons prefix">today</i>
                                         <input type="text" className="datepicker" id="date"
                                                value={this.state.date} onChange={this.onChange} required={required}/>
                                     </div>
-                                    <div className={"col s2 input-field"}>
-                                        <label htmlFor="time">Time</label>
-                                        <i className="material-icons prefix">query_builder</i>
-                                        <input type="text" className="timepicker" id="time"
-                                               value={this.state.time} onChange={this.onChange} required={required}/>
-                                    </div>
-                                    <div className={"col s4 "}>
+                                    {/*<div className={"col s2 input-field"}>*/}
+                                    {/*    <label htmlFor="time">Time</label>*/}
+                                    {/*    <i className="material-icons prefix">query_builder</i>*/}
+                                    {/*    <input type="text" className="timepicker" id="time"*/}
+                                    {/*           value={this.state.time} onChange={this.onChange} required={required}/>*/}
+                                    {/*</div>*/}
+                                    <div className={"col s6 "}>
                                         <button type='submit'
                                                 className='col s12 btn btn-large deep-orange accent-3 z-depth-1-half'
                                                 id="submit-orange"
