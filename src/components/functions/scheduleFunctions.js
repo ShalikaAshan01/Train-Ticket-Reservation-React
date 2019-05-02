@@ -18,3 +18,7 @@ export const fn_getSpecificSchedule = async (data) =>{
     return await axios.get(' http://localhost:3000/schedules/'+data.date+"/"+data._tid);
 };
 
+export const fn_makeReservation = async (data,header) =>{
+    return await axios.put(' http://localhost:3000/schedules/'+data.trainID+"/"+data.date,data,header);
+};
+

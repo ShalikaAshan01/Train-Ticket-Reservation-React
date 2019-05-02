@@ -14,6 +14,7 @@ import showRoutes from "./components/showRoute";
 import Navbar from "./components/Navbar";
 import home from "./components/home";
 import reservation from "./components/reservation/reservation";
+import payment from "./components/reservation/payment";
 
 function PrivateRoute({ component: Component, ...rest }) {
     return (
@@ -70,6 +71,7 @@ class App extends Component {
                     <Route exact path="/line" component={showRoutes}/>
                     <PrivateRoute exact path="/reservation" component={reservation}/>
                     <PrivateRoute exact path="/signout" component={signout}/>
+                    <PrivateRoute exact path="/reservation/payment" component={payment}/>
                 </div>
             </div>
         );

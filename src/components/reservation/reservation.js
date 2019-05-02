@@ -8,6 +8,7 @@ import {fn_getSpecificPricingInfo} from "../functions/pricingFunctions";
 import moment from 'moment';
 
 var context;
+
 class reservation extends Component {
 
     constructor(props) {
@@ -16,34 +17,38 @@ class reservation extends Component {
             inputs: {
                 class: "unknown",
             },
-            discount:0,
-            seats:"",
+            discount: 0,
+            seats: "",
             price: {
                 A: "0",
                 B: "0",
                 C: "0"
             },
-            subtotal:0,
-            discountamount:0,
-            grandtotal:0,
-            info:{
-                departure:"",
-                arrival:"",
-                trainID:"",
-                date:"",
-                trainName:"",
-                type:"",
-                A:"",
-                B:"",
-                C:"",
-                from:"",
-                to:""
+            subtotal: 0,
+            discountamount: 0,
+            grandtotal: 0,
+            info: {
+                departure: "",
+                arrival: "",
+                trainID: "",
+                date: "",
+                trainName: "",
+                type: "",
+                A: "",
+                B: "",
+                C: "",
+                from: "",
+                to: ""
             }
         };
         this.onChange = this.onChange.bind(this)
     }
 
     componentDidMount() {
+
+
+        var elems = document.querySelectorAll('.modal');
+        M.Modal.init(elems, {});
 
         // const context = this;
         context = this;
@@ -57,7 +62,7 @@ class reservation extends Component {
         };
         validateUser(data).then(res => {
             res = res.data;
-            if(!res.success){
+            if (!res.success) {
                 localStorage.clear();
                 sessionStorage.clear();
                 swal("Authentication Error", "Cannot authenticate user,Please Login", "warning").then(val => {
@@ -93,35 +98,34 @@ class reservation extends Component {
         //validate if page is valid or not
         if (this.props.location.state === undefined) {
             this.props.history.push('/error/400');
-        }else{
-            let loc= this.props.location.state;
+        } else {
+            let loc = this.props.location.state;
 
-            if(loc.departure !== undefined && loc.arrival !== undefined && loc.date !== undefined
-                && loc.trainID!== undefined && loc.type !== undefined){
-
+            if (loc.departure !== undefined && loc.arrival !== undefined && loc.date !== undefined
+                && loc.trainID !== undefined && loc.type !== undefined) {
 
 
                 fn_getSpecificSchedule({
                     _tid: loc.trainID,
                     date: moment(new Date(loc.date)).format('MM-DD-YYYY')
-                }).then(data=>{
+                }).then(data => {
                     data = data.data.schedule;
                     this.setState({
-                        info:{
+                        info: {
                             departure: loc.departure,
                             arrival: loc.arrival,
                             trainID: loc.trainID,
                             date: loc.date,
-                            trainName:data.trainName,
-                            A:data.availableSeats.A,
-                            B:data.availableSeats.B,
-                            C:data.availableSeats.C,
-                            type:loc.type,
-                            from:data.route.from.station,
-                            to:data.route.to.station,
+                            trainName: data.trainName,
+                            A: data.availableSeats.A,
+                            B: data.availableSeats.B,
+                            C: data.availableSeats.C,
+                            type: loc.type,
+                            from: data.route.from.station,
+                            to: data.route.to.station,
                         }
                     });
-                }).catch(()=>{
+                }).catch(() => {
                     this.props.history.push('/error/404');
                 });
 
@@ -129,25 +133,25 @@ class reservation extends Component {
 
                 var duration = moment.duration(moment(new Date(loc.date)).diff(moment(new Date(today)))).as('days');
 
-                if(duration<0){
+                if (duration < 0) {
                     this.props.history.push('/error/410');
                 }
-            }else{
+            } else {
                 this.props.history.push('/error/400');
             }
 
 
             //get price information
-            fn_getSpecificPricingInfo(this.props.location.state.type).then(data=>{
+            fn_getSpecificPricingInfo(this.props.location.state.type).then(data => {
                 data = data.data;
                 this.setState({
-                   price:{
-                       A:data.price.price.classA,
-                       B:data.price.price.classB,
-                       C:data.price.price.classC,
-                   }
+                    price: {
+                        A: data.price.price.classA,
+                        B: data.price.price.classB,
+                        C: data.price.price.classC,
+                    }
                 });
-            }).catch(()=>{
+            }).catch(() => {
                 this.props.history.push('/error/400');
             })
 
@@ -163,7 +167,7 @@ class reservation extends Component {
         })
     };
 
-    addPromo(){
+    addPromo() {
         swal({
             text: 'Only government employees can get discounts, Please Enter NIC number',
             content: "input",
@@ -182,29 +186,29 @@ class reservation extends Component {
 
                 if (!json.success) {
                     context.setState({
-                        discount:0,
+                        discount: 0,
                     });
                     return swal(json.message);
                 }
 
                 let subtotal = context.state.price[context.state.inputs.class] * context.state.seats;
 
-                if(json.discount === undefined){
+                if (json.discount === undefined) {
                     json.discount = 0;
                 }
 
-                let discountamount = (subtotal * json.discount) /100.0;
+                let discountamount = (subtotal * json.discount) / 100.0;
                 let total = subtotal - discountamount;
 
                 context.setState({
-                    discount:json.discount,
-                    subtotal:subtotal,
-                    discountamount:discountamount,
-                    grandtotal:total,
+                    discount: json.discount,
+                    subtotal: subtotal,
+                    discountamount: discountamount,
+                    grandtotal: total,
                 });
 
 
-                const discount = "You got "+json.discount + "% discount";
+                const discount = "You got " + json.discount + "% discount";
 
                 swal({
                     title: "Congratulations...",
@@ -223,34 +227,59 @@ class reservation extends Component {
 
     }
 
-    onChange(event){
+    onChange(event) {
         const re = /^[0-9\b]+$/;
         if (event.target.value === '' || re.test(event.target.value)) {
 
             let max = this.state.info[this.state.inputs.class];
 
-            let value=event.target.value;
+            let value = event.target.value;
 
             this.setState({
-                seats:value
+                seats: value
 
             });
-            if(max === undefined){
+            if (max === undefined) {
                 value = 0;
-            }else if(value>max){
+            } else if (value > max) {
                 value = max;
             }
 
             let subtotal = this.state.price[this.state.inputs.class] * value;
-            let discount = (subtotal * this.state.discount) /100.0;
+            let discount = (subtotal * this.state.discount) / 100.0;
             let total = subtotal - discount;
 
             this.setState({
-                seats:value,
-                subtotal:subtotal,
-                discountamount:discount,
-                grandtotal:total,
+                seats: value,
+                subtotal: subtotal,
+                discountamount: discount,
+                grandtotal: total,
             });
+        }
+    }
+
+    checkout() {
+
+        let reservation = {
+            seats: context.state.seats,
+            class: context.state.inputs.class,
+            discount: context.state.discountamount,
+            total: context.state.grandtotal,
+            departure: context.state.info.departure,
+            arrival: context.state.info.arrival,
+            from: context.state.info.from,
+            to: context.state.info.to,
+            trainName: context.state.info.trainName,
+            date: moment(new Date(context.state.info.date)).format("MM-DD-YYYY"),
+            trainID:context.state.info.trainID
+        };
+
+        if (reservation.total !== 0){
+            context.props.history.push({
+                    pathname: '/reservation/payment',
+                    state:reservation
+                }
+            );
         }
     }
 
@@ -261,7 +290,7 @@ class reservation extends Component {
         var elems_select = document.querySelectorAll('select');
         M.FormSelect.init(elems_select, {});
 
-        const summary =(
+        const summary = (
             <div className="row">
                 <div className="col s12 m12">
                     <div className="card blue-grey darken-1 z-depth-5">
@@ -271,7 +300,8 @@ class reservation extends Component {
                             <div className="row">
                                 <div className="col s4"></div>
                                 <div className="col s4">
-                                    <span className="center-align">Class {this.state.inputs.class} ({this.state.price[this.state.inputs.class]}) * {this.state.seats}</span><br/>
+                                    <span
+                                        className="center-align">Class {this.state.inputs.class} ({this.state.price[this.state.inputs.class]}) * {this.state.seats}</span><br/>
                                     <span
                                         className="center-align font-italic">({this.state.info.type} Train)</span>
                                 </div>
@@ -285,7 +315,7 @@ class reservation extends Component {
                                     <b className="center-align">Discount %{this.state.discount} off</b>
                                 </div>
                                 <div className="col s4 right-align">
-                                    <b> -{this.state.discountamount}</b>
+                                    <b> {this.state.discountamount}</b>
                                 </div>
                             </div>
                             <div className="row">
@@ -303,7 +333,7 @@ class reservation extends Component {
                 </div>
             </div>
         );
-        const cardAction =(
+        const cardAction = (
             <div className="card-action">
 
                 <div className="left-align">
@@ -313,10 +343,10 @@ class reservation extends Component {
                     </Link>
                 </div>
                 <div className="right-align row">
-                    <button className="waves-effect waves-light btn inp-icon-dialog amber accent-4">
+                    <button data-target="modal2" className="modal-trigger waves-effect waves-light btn inp-icon-dialog amber accent-4">
                         Credit the monthly bill
                     </button>
-                    <button className="ml-5 waves-effect waves-light btn green accent-4">
+                    <button className="ml-5 waves-effect waves-light btn green accent-4" onClick={this.checkout}>
                         <i className="material-icons left">credit_card</i>
                         Checkout
                     </button>
@@ -362,14 +392,19 @@ class reservation extends Component {
 
 
                                                     <option disabled value="class">Class</option>
-                                                    <option value="A" disabled={this.state.info.A === 0? true: null}>Class A</option>
-                                                    <option value="B" disabled={this.state.info.B === 0}>Class B</option>
-                                                    <option value="C" disabled={this.state.info.C === 0}>Class C</option>
+                                                    <option value="A"
+                                                            disabled={this.state.info.A === 0 ? true : null}>Class A
+                                                    </option>
+                                                    <option value="B" disabled={this.state.info.B === 0}>Class B
+                                                    </option>
+                                                    <option value="C" disabled={this.state.info.C === 0}>Class C
+                                                    </option>
 
                                                 </select>
                                             </div>
                                             <div className={"input-field col s2"}>
-                                                <input type="number" min="0" value={this.state.seats} onChange={this.onChange}
+                                                <input type="number" min="0" value={this.state.seats}
+                                                       onChange={this.onChange}
                                                 />
                                             </div>
 
@@ -377,7 +412,8 @@ class reservation extends Component {
                                         </div>
 
                                         <div>
-                                            <button className="ml-5 waves-effect waves-light btn cyan accent-4" onClick={this.addPromo}>
+                                            <button className="ml-5 waves-effect waves-light btn cyan accent-4"
+                                                    onClick={this.addPromo}>
                                                 <i className="material-icons left">rss_feed</i>
                                                 Add Promo
                                             </button>
@@ -385,11 +421,42 @@ class reservation extends Component {
 
                                     </div>
                                 </div>
-                                {this.state.inputs.class!=="unknown" && this.state.seats!=="" ? summary : ''}
+                                {this.state.inputs.class !== "unknown" && this.state.seats !== "" ? summary : ''}
                             </div>
-                            {this.state.inputs.class!=="unknown" && this.state.seats!=="" ? cardAction : ''}
+                            {this.state.inputs.class !== "unknown" && this.state.seats !== "" ? cardAction : ''}
 
                         </div>
+                    </div>
+                </div>
+
+                <div id="modal2" className="modal">
+
+                    <div className="modal-title"><h4>Pay to Dialog Monthly Bill</h4></div>
+
+                    <div className="modal-content">
+
+                        <h5>Amount:LKR {this.state.grandtotal}</h5>
+
+                        <div className="row">
+                            <form className="col s12">
+                                <div className="row">
+                                    <div className="input-field col s6">
+                                        <i className="material-icons prefix">phone</i>
+                                        <input id="icon_telephone" type="tel" name={"phone"} className="validate"/>
+                                            <label htmlFor="icon_telephone">Telephone</label>
+                                    </div>
+                                    <div className="input-field col s6">
+                                        <i className="material-icons prefix">lock</i>
+                                        <input id="icon_prefix" type="text" name="pin" className="validate" min={4} max={4}/>
+                                        <label htmlFor="icon_prefix">Pin</label>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                    <div className="modal-footer">
+                        <button className="modal-close waves-effect waves-green btn-flat">Pay</button>
                     </div>
                 </div>
 
