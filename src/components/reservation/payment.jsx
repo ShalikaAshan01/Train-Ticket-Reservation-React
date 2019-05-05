@@ -58,10 +58,13 @@ class payment extends Component{
     }
 
     componentDidMount() {
-
+        document.title = "Pay by Sampath Vishwa";
         var elems = document.querySelectorAll('.modal');
         M.Modal.init(elems,
             {
+                onCloseStart:function () {
+                    context.props.history.push('/');
+                }
             }
         );
 

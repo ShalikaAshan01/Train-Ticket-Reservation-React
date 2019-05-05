@@ -52,7 +52,7 @@ class reservation extends Component {
 
         // const context = this;
         context = this;
-        document.title = "Reservation";
+        document.title = "Reserve Tickets";
 
         //validating user
         let user = JSON.parse(localStorage.getItem('user'));

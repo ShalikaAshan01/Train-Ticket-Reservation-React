@@ -24,6 +24,7 @@ class addLine extends Component {
     }
 
     componentDidMount() {
+        document.title = "Add New Line";
         M.AutoInit();
         user = localStorage.getItem('user');
         if(user==null)

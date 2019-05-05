@@ -7,6 +7,7 @@ import 'materialize-css/dist/css/materialize.min.css';
 import signin from "./components/users/signin";
 import signup from "./components/users/signup";
 import updateProfile from "./components/users/updateProfile";
+import updatePassword from "./components/users/updatePassword";
 import myReservation from "./components/users/myReservations";
 import signout from "./components/users/signout";
 import addTrain from "./components/admins/addTrain";
@@ -17,6 +18,7 @@ import Navbar from "./components/Navbar";
 import home from "./components/home";
 import reservation from "./components/reservation/reservation";
 import payment from "./components/reservation/payment";
+import M from "materialize-css";
 
 function PrivateRoute({ component: Component, ...rest }) {
     return (
@@ -45,6 +47,17 @@ function Auth({ component: Component, ...rest }) {
 
 class App extends Component {
 
+    componentDidMount() {
+        var nav = document.querySelectorAll('.sidenav');
+        M.Sidenav.init(nav, {});
+
+        var dropdown = document.querySelectorAll('.dropdown-trigger');
+        M.Dropdown.init(dropdown,{
+            hover: true,
+            coverTrigger:false,
+            constrainWidth:false
+        });
+    }
 
     render() {
 
@@ -72,6 +85,9 @@ class App extends Component {
                     <Route exact path="/admin/line/edit" component={editLine}/>
                     <Route exact path="/line" component={showRoutes}/>
                     <PrivateRoute exact path="/user/profile/:id" component={updateProfile}/>
+                    <PrivateRoute exact path="/user/profile/:id/password" component={updatePassword}/>
+                    <PrivateRoute exact path="/user/profile/password" component={updatePassword}/>
+                    <PrivateRoute exact path="/user/profile/" component={updateProfile}/>
                     <PrivateRoute exact path="/reservation" component={reservation}/>
                     <PrivateRoute exact path="/user/reservation/:id" component={myReservation}/>
                     <PrivateRoute exact path="/user/reservation/" component={myReservation}/>

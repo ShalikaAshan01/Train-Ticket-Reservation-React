@@ -8,6 +8,7 @@ var user = null;
 
 class addTrain extends Component {
     componentDidMount() {
+        document.title = "Add New Train Information";
         M.AutoInit();
 
         //validating user

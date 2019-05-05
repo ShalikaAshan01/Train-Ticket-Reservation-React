@@ -7,7 +7,11 @@ class signout extends Component{
         localStorage.clear();
         sessionStorage.clear();
         this.props.history.push("/");
+        window.location.reload();
     };
+    componentDidMount() {
+        document.title = "Signout";
+    }
 
     render() {
         return(

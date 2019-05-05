@@ -25,6 +25,7 @@ class editLine extends Component {
 
 
     componentDidMount() {
+        document.title = "Edit Line";
         M.AutoInit();
         alert("Not implemented");
         user = localStorage.getItem('user');

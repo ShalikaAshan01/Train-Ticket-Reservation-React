@@ -15,6 +15,8 @@ class myReservations extends Component{
     }
 
     componentDidMount() {
+        document.title = "My Reservations";
+
         let user =JSON.parse(localStorage.getItem('user'));
         context = this;
 
@@ -22,6 +24,7 @@ class myReservations extends Component{
 
         if(user._id !== this.props.match.params.id){
             this.props.history.push('/user/reservation/'+user._id);
+            window.location.reload();
         }else {
 
             //get reservation list

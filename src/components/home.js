@@ -14,12 +14,12 @@ class home extends Component {
         this.state = {
             stationList: [],
             trainList: [],
-            departure: "Colombo",
-            arrival: "Badulla",
+            departure: "",
+            arrival: "",
             date: "Today",
             time: "Now",
-            isAutoDeparture: true,
-            isAutoArrival: true,
+            isAutoDeparture: false,
+            isAutoArrival: false,
             modal: {header: "", body: ""},
             button: {check: "Check"},
             checkResult: {trainList: [], isActive: false,},
@@ -89,6 +89,7 @@ class home extends Component {
 
     componentDidMount() {
 
+        document.title = "Train Reservation System";
         var context = this;
         // Initilize date,time,select fields
         var date = new Date();
@@ -340,6 +341,7 @@ class home extends Component {
                                     });
 
 
+
                                     //if schedule is not selected then create new one and also return available seats
 
                                     let date = context.state.date;
@@ -362,8 +364,8 @@ class home extends Component {
                                             <td>{item.trainName}</td>
                                             <td>{item.from}</td>
                                             <td>{item.to}</td>
-                                            <td>{departureObj[0].time}</td>
-                                            <td>{arrivalObj[0].time}</td>
+                                            <td>{departureObj.length !== 0 ?departureObj[0].time :''}</td>
+                                            <td>{arrivalObj.length !== 0 ?arrivalObj[0].time :''}</td>
                                             <td>{item.line}</td>
                                             <td>{item.type}</td>
                                             <td>

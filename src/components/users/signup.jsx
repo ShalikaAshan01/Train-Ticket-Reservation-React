@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom'
 
 class login extends Component{
     componentDidMount() {
+        document.title = "Create an Account";
         // Auto initialize all the things!
         M.AutoInit();
     }

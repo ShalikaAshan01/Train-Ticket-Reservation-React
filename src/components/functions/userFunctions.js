@@ -29,9 +29,26 @@ export const signinFunction = async data =>{
         });
 
 };
+/**
+ * this ajax request can update user information
+ * @param data
+ * @param header
+ * @returns {Promise<any>}
+ */
 export const fn_updateProfile = async (data,header )=>{
     return await axios
         .patch('http://localhost:3000/users/'+data._id, data,header);
+
+};
+/**
+ * this ajax request will update user's password
+ * @param data
+ * @param header
+ * @returns {Promise<any>}
+ */
+export const fn_updatePassword = async (data,header )=>{
+    return await axios
+        .put('http://localhost:3000/users/'+data._id+'/changepassword', data,header);
 
 };
 /**

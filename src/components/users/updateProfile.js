@@ -1,12 +1,16 @@
 import React, { Component } from 'react'
 import M from 'materialize-css';
-import {fn_updateProfile} from '../functions/userFunctions';
+import {fn_updateProfile, validateUser} from '../functions/userFunctions';
 import { Link } from 'react-router-dom'
 import swal from '@sweetalert/with-react'
 
 var user;
+var context;
 class updateProfile extends Component{
     componentDidMount() {
+        document.title = "Change Profile";
+
+        context = this;
         // Auto initialize all the things!
         M.AutoInit();
         user = JSON.parse(localStorage.getItem('user'));
@@ -15,7 +19,57 @@ class updateProfile extends Component{
             lastName : user.lastName,
             email : user.email,
             telephoneNumber : user.telephoneNumber,
-        })
+        });
+
+        //validate user
+        let data = {
+            _id: user._id,
+            _token: user._token
+        };
+
+
+
+        if(user._id === this.props.match.params.id){
+            validateUser(data).then(res => {
+                res = res.data;
+                if(!res.success){
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    swal("Authentication Error", "Cannot authenticate user,Please Login", "warning").then(val => {
+                        if (val) {
+                            this.props.history.push({
+                                    pathname: '/signin',
+                                    state: {
+                                        from: context.props.location
+                                    }
+                                }
+                            );
+                        }
+                    })
+
+                }
+            }).catch(() => {
+                localStorage.clear();
+                sessionStorage.clear();
+                swal("Authentication Error", "Cannot Authenticate user,Please Login", "warning").then(val => {
+                    if (val) {
+                        this.props.history.push({
+                                pathname: '/signin',
+                                state: {
+                                    from: this.props.location
+                                }
+                            }
+                        );
+                    }
+                })
+
+            });
+        }else{
+            this.props.history.push('/user/profile/'+user._id);
+            window.location.reload();
+
+        }
+
     }
 
 
@@ -242,13 +296,15 @@ class updateProfile extends Component{
 
                                         {/* buttons */}
                                         <div className='row'>
-                                            <button type='submit' name='signup' className='col s12 btn btn-large waves-effect indigo'>Update</button>
+                                            <button type='submit' name='signup' className='col s12 btn waves-effect indigo'>Update</button>
                                         </div>
 
-                                        <div className='row'>
-                                            <Link to="/signin" className="waves-effect waves-light btn btn-large col s12">Cancel</Link>
+                                        <div className="row">
+                                        <Link to={"/"} className="col s12 waves-effect waves-light btn red accent-2">
+                                                <i className="material-icons left">reply_all</i>
+                                                Go Back
+                                            </Link>
                                         </div>
-
                                     </form>
                                 </div>
 
