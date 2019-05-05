@@ -140,6 +140,7 @@ class payment extends Component{
         let year = this.state.year;
         let name = this.state.name;
 
+        //credit card inforamtion validate
         if(valid.number(number).isValid && valid.expirationDate(month+year).isValid && valid.cvv(cvv).isValid){
 
             let card={

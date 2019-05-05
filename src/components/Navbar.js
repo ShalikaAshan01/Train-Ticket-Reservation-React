@@ -100,7 +100,7 @@ class Navbar extends Component {
                 {localStorage.getItem('user')? myAccount2 : ''}
 
                 <nav>
-                    <div className="nav-wrapper">
+                    <div className="nav-wrapper blue-grey darken-4">
                         <Link to={"/"} className="brand-logo">
                             <img className="img-responsive" width="120" src={logo} alt="logo"/>
 

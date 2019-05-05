@@ -52,6 +52,7 @@ class home extends Component {
                 }
             },()=>{
 
+                //show alert
                 swal({
                     text: "Available Seat Information",
                     buttons: {
@@ -91,6 +92,7 @@ class home extends Component {
 
         document.title = "Train Reservation System";
         var context = this;
+        
         // Initilize date,time,select fields
         var date = new Date();
         var delems = document.querySelectorAll('#date');
@@ -162,6 +164,7 @@ class home extends Component {
             arrival: this.state.arrival,
         };
 
+        //set date to object
         if (this.state.date === "Today") {
             data.date = moment().format('MM/DD/YYYY');
             data.day = moment().format('dddd');
@@ -178,6 +181,7 @@ class home extends Component {
             })
         }
 
+        //check availability of the train which is given by user
         fn_checkAvailability(data).then(res => {
             let data = res.data;
             this.setState({
@@ -249,8 +253,10 @@ class home extends Component {
         var required = true;
         return (
             <div>
-                <div className="col s12 m12 z-depth-3">
-                    <div className="card grey lighten-5">
+                <img className="bg" src={process.env.PUBLIC_URL + '/icon/bg.jpg'} alt="bg"/>
+
+                <div className="col s12 m12 z-depth-3 mt-50">
+                    <div className="card  blue-grey lighten-4 mt-50">
                         <div className="card-content  text-blue-grey text-darken-4">
                             <form onSubmit={this.onSubmit}>
                                 <div className={"row"}>

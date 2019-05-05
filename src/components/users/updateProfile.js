@@ -27,8 +27,6 @@ class updateProfile extends Component{
             _token: user._token
         };
 
-
-
         if(user._id === this.props.match.params.id){
             validateUser(data).then(res => {
                 res = res.data;
