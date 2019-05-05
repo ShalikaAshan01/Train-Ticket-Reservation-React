@@ -6,6 +6,8 @@ import 'materialize-css/dist/css/materialize.min.css';
 // components
 import signin from "./components/users/signin";
 import signup from "./components/users/signup";
+import updateProfile from "./components/users/updateProfile";
+import myReservation from "./components/users/myReservations";
 import signout from "./components/users/signout";
 import addTrain from "./components/admins/addTrain";
 import addLine from "./components/admins/addLine";
@@ -69,7 +71,10 @@ class App extends Component {
                     <Route exact path="/admin/line/add" component={addLine}/>
                     <Route exact path="/admin/line/edit" component={editLine}/>
                     <Route exact path="/line" component={showRoutes}/>
+                    <PrivateRoute exact path="/user/profile/:id" component={updateProfile}/>
                     <PrivateRoute exact path="/reservation" component={reservation}/>
+                    <PrivateRoute exact path="/user/reservation/:id" component={myReservation}/>
+                    <PrivateRoute exact path="/user/reservation/" component={myReservation}/>
                     <PrivateRoute exact path="/signout" component={signout}/>
                     <PrivateRoute exact path="/reservation/payment" component={payment}/>
                 </div>

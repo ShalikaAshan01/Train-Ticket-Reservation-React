@@ -29,6 +29,11 @@ export const signinFunction = async data =>{
         });
 
 };
+export const fn_updateProfile = async (data,header )=>{
+    return await axios
+        .patch('http://localhost:3000/users/'+data._id, data,header);
+
+};
 /**
  * this ajax call will be validate user
  * @param data
