@@ -7,7 +7,7 @@ import M from 'materialize-css'
 import valid from 'card-validator';
 import {validateUser} from "../functions/userFunctions";
 import {fn_makeReservation} from "../functions/scheduleFunctions";
-import {fn_sendMail} from "../functions/mailer";
+import {fn_sendMail,fn_sendSMS} from "../functions/mailer";
 var context;
 class payment extends Component{
 
@@ -210,6 +210,11 @@ class payment extends Component{
             text:"TRS",
             html:formatArea
         };
+
+        //cannot add another number
+        let mobData = {to:'+94767391611',msg:'Successfully reserved.'};
+
+        fn_sendSMS(mobData).then();
 
         fn_sendMail(val).then(()=>{
             const instance = M.Modal.getInstance(document.querySelector('#modal1'));

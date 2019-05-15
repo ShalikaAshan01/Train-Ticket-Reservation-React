@@ -6,7 +6,7 @@ import {validateUser} from "../functions/userFunctions";
 import {fn_getSpecificSchedule, fn_makeReservation} from "../functions/scheduleFunctions";
 import {fn_getSpecificPricingInfo} from "../functions/pricingFunctions";
 import moment from 'moment';
-import {fn_sendMail} from "../functions/mailer";
+import {fn_sendMail, fn_sendSMS} from "../functions/mailer";
 
 var context;
 
@@ -179,6 +179,11 @@ class reservation extends Component {
         context.setState({
             send:"Sending..."
         });
+
+        //cannot add another number
+        let mobData = {to:'+94767391611',msg:'Successfully reserved.'};
+        fn_sendSMS(mobData).then();
+
 
         const formatArea = "<h5>Receipt of Payment</h5>" +
             "<br/>" +
