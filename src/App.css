@@ -386,3 +386,6 @@ input.invalid {
      left: 0;
      z-index: -1;
    }
+   .summary{
+     overflow-x: scroll;
+   }

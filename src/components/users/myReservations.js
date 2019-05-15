@@ -131,7 +131,7 @@ class myReservations extends Component{
                                                         </div>
                                                         <div className="col s6 right-align">
                                                             <strong>
-                                                            LKR {val.payment.total.$numberDecimal}</strong>
+                                                            LKR {val.payment.total.$numberDecimal}({val.payment.type.toUpperCase()})</strong>
                                                         </div>
                                                     </div>
                                                 </div>

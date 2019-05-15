@@ -215,7 +215,7 @@ class payment extends Component{
             const instance = M.Modal.getInstance(document.querySelector('#modal1'));
             instance.close();
 
-            swal("Email was Send","We will redirect you to homepage",'success').then(()=>{
+            swal("Email was Send","You will redirect you to homepage",'success').then(()=>{
                 context.props.history.push('/')
             })
         });

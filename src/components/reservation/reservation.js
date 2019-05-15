@@ -3,9 +3,10 @@ import M from 'materialize-css';
 import swal from '@sweetalert/with-react'
 import {Link} from 'react-router-dom'
 import {validateUser} from "../functions/userFunctions";
-import {fn_getSpecificSchedule} from "../functions/scheduleFunctions";
+import {fn_getSpecificSchedule, fn_makeReservation} from "../functions/scheduleFunctions";
 import {fn_getSpecificPricingInfo} from "../functions/pricingFunctions";
 import moment from 'moment';
+import {fn_sendMail} from "../functions/mailer";
 
 var context;
 
@@ -17,6 +18,8 @@ class reservation extends Component {
             inputs: {
                 class: "unknown",
             },
+            phone:"",
+            email:'',
             discount: 0,
             seats: "",
             price: {
@@ -24,6 +27,8 @@ class reservation extends Component {
                 B: "0",
                 C: "0"
             },
+            telephone:"",
+            pin:"",
             subtotal: 0,
             discountamount: 0,
             grandtotal: 0,
@@ -42,6 +47,7 @@ class reservation extends Component {
             }
         };
         this.onChange = this.onChange.bind(this)
+        this.onChangeForDialog = this.onChangeForDialog.bind(this)
     }
 
     componentDidMount() {
@@ -145,6 +151,7 @@ class reservation extends Component {
             fn_getSpecificPricingInfo(this.props.location.state.type).then(data => {
                 data = data.data;
                 this.setState({
+                    email:JSON.parse(localStorage.getItem('user')).email,
                     price: {
                         A: data.price.price.classA,
                         B: data.price.price.classB,
@@ -166,6 +173,85 @@ class reservation extends Component {
             }
         })
     };
+
+    sendEbill(){
+
+        context.setState({
+            send:"Sending..."
+        });
+
+        const formatArea = "<h5>Receipt of Payment</h5>" +
+            "<br/>" +
+            "<b>Train: "+context.state.info.trainName+" ("+context.state.info.from +" to "+ context.state.info.to+")</b><br/>" +
+            "<b>User: "+JSON.parse(localStorage.getItem('user')).firstName + " " + JSON.parse(localStorage.getItem('user')).lastName+"</b><br/>" +
+            "<b>Journey: "+context.state.info.from+" to "+ context.state.info.to+"</b><br/>" +
+            "<b>Tickets: "+context.state.seats+", Class: "+context.state.class+" </b><br/>" +
+            "<b>Date: "+context.state.info.date+"</b><br/>" ;
+
+
+        let val = {
+            to:context.state.email,
+            subject:"Receipt for your Payment",
+            text:"TRS",
+            html:formatArea
+        };
+
+        fn_sendMail(val).then(()=>{
+            const instance = M.Modal.getInstance(document.querySelector('#modal1'));
+            instance.close();
+
+            swal("Email was Send","You will redirect you to homepage",'success').then(()=>{
+                context.props.history.push('/')
+            })
+        });
+    }
+
+    payDialog(){
+
+        let dialog={
+            pin:context.state.pin,
+            telephoneNumber:context.state.telephone
+        };
+
+        let reservation = {
+            seats: context.state.seats,
+            class: context.state.inputs.class,
+            discount: context.state.discountamount,
+            total: context.state.grandtotal,
+            departure: context.state.info.departure,
+            arrival: context.state.info.arrival,
+            from: context.state.info.from,
+            to: context.state.info.to,
+            type:"dialog",
+            trainName: context.state.info.trainName,
+            date: moment(new Date(context.state.info.date)).format("MM-DD-YYYY"),
+            trainID:context.state.info.trainID
+        };
+
+
+        let values = {
+            reservation:reservation,
+            dialog:dialog
+        };
+
+        let user = JSON.parse(localStorage.getItem('user'));
+
+        const header = {
+            headers: {
+                _id:user._id,
+                _token:user._token
+            }
+        };
+        const instance = M.Modal.getInstance(document.querySelector('#modal1'));
+        fn_makeReservation(values.reservation,header).then(data=>{
+            if(data.data.success){
+                instance.open();
+            }
+        }).catch(err=>{
+            swal("Success",err.message,"success")
+
+        })
+    }
 
     addPromo() {
         swal({
@@ -258,6 +344,10 @@ class reservation extends Component {
         }
     }
 
+    onChangeForDialog(e){
+        this.setState({[e.target.name]: e.target.value,message:null});
+    }
+
     checkout() {
 
         let reservation = {
@@ -285,6 +375,20 @@ class reservation extends Component {
 
 
     render() {
+
+        const receipt = (
+            <div>
+                <h5>Receipt of Payment</h5>
+
+                <b>Train: {this.state.info.trainName} ({this.state.info.from} to {this.state.info.to})</b><br/>
+                <b>User: {JSON.parse(localStorage.getItem('user')).firstName + " " + JSON.parse(localStorage.getItem('user')).lastName}</b><br/>
+                <b>Journey: {this.state.info.from} to  {this.state.info.to}</b><br/>
+                <b>Tickets: {this.state.seats}, Class: {this.state.class} </b><br/>
+                <b>Date: {this.state.info.date}</b><br/>
+            </div>
+        );
+
+
         //Initialization
         //select
         var elems_select = document.querySelectorAll('select');
@@ -356,7 +460,7 @@ class reservation extends Component {
 
         return (
             <div>
-                <div className="row valign-wrapper offset-m3">
+                <div className="row valign-wrapper offset-m3 summary">
                     <div className="col s12 m12 ">
                         <div className="card grey lighten-5 z-depth-3">
                             <div className="card-content text-blue-grey text-darken-4">
@@ -442,12 +546,16 @@ class reservation extends Component {
                                 <div className="row">
                                     <div className="input-field col s6">
                                         <i className="material-icons prefix">phone</i>
-                                        <input id="icon_telephone" type="tel" name={"phone"} className="validate"/>
+                                        <input id="icon_telephone" type="tel" name={"telephone"} className="validate"
+                                        value={this.state.telephone} onChange={this.onChangeForDialog}
+                                        />
                                             <label htmlFor="icon_telephone">Telephone</label>
                                     </div>
                                     <div className="input-field col s6">
                                         <i className="material-icons prefix">lock</i>
-                                        <input id="icon_prefix" type="text" name="pin" className="validate" min={4} max={4}/>
+                                        <input id="icon_prefix" type="text" name="pin" className="validate" min={4} max={4}
+                                               value={this.state.pin} onChange={this.onChangeForDialog}
+                                        />
                                         <label htmlFor="icon_prefix">Pin</label>
                                     </div>
                                 </div>
@@ -456,10 +564,39 @@ class reservation extends Component {
 
                     </div>
                     <div className="modal-footer">
-                        <button className="modal-close waves-effect waves-green btn-flat">Pay</button>
+                        <button className="modal-close waves-effect waves-green btn-flat" onClick={this.payDialog}>Pay</button>
                     </div>
                 </div>
 
+                <div id="modal1" className="modal">
+                    <div className="modal-content">
+                        <h4>Successfully Paid</h4>
+
+                        {receipt}
+                        {/*form*/}
+
+                        <div className="row">
+                            <div className="input-field col s6">
+                                <i className="material-icons prefix">email</i>
+                                <input id="email" type="email" name="email" className="validate" onChange={this.onChange} value={this.state.email}/>
+                                <label htmlFor="email">Email Address</label>
+                            </div>
+                            <div className="input-field col s6">
+                                <i className="material-icons prefix">phone</i>
+                                <input id="icon_telephone" name="phone" type="tel" className="validate" value={this.state.phone} onChange={this.onChange}/>
+                                <label htmlFor="icon_telephone">Telephone</label>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div className="modal-footer">
+                        <button className="btn waves-effect waves-light" type="submit" name="action" onClick={this.sendEbill}>Send
+                            <i className="material-icons right">{this.state.send}</i>
+                        </button>
+                    </div>
+
+
+                </div>
             </div>
         )
     }

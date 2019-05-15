@@ -31,18 +31,21 @@ class home extends Component {
         this.onClickRow = this.onClickRow.bind(this);
     }
 
-
-    //handle modal onClick
+    //handle modal table onClick which is handle train information
     onClickRow = (parameter, event) => {
+
+        //assign selected row values
         let train = this.state.checkResult.trainList[parameter];
+
+        //data variable is used for getting seats information from selected train
         let data = {
             _tid: train._id,
             date: moment(new Date(this.state.date)).format("MM-DD-YYYY"),
         };
 
+        //fetching data
         fn_getSpecificSchedule(data).then(data => {
             let schedule = data.data.schedule;
-
 
             this.setState({
                 availableSeats: {
@@ -52,7 +55,7 @@ class home extends Component {
                 }
             },()=>{
 
-                //show alert
+                //show information alert
                 swal({
                     text: "Available Seat Information",
                     buttons: {
@@ -67,6 +70,7 @@ class home extends Component {
                         </div>
                     )
                 }).then(value=>{
+                    //handle alert onClick
                     if(value==="ok"){
                         this.props.history.push({
                                 pathname : '/reservation',
@@ -92,8 +96,8 @@ class home extends Component {
 
         document.title = "Train Reservation System";
         var context = this;
-        
-        // Initilize date,time,select fields
+
+        // Initilize date picker
         var date = new Date();
         var delems = document.querySelectorAll('#date');
         M.Datepicker.init(delems, {
@@ -106,6 +110,7 @@ class home extends Component {
             }
         });
 
+        //initialize time picker
         var telems = document.querySelectorAll('.timepicker');
         M.Timepicker.init(telems, {
             twelveHour: false,
@@ -114,11 +119,12 @@ class home extends Component {
             }
         });
 
+        //initialize select option
         var sel_elems = document.querySelectorAll('select');
         M.FormSelect.init(sel_elems, {});
 
 
-        //get all stations from route function
+        //get all stations names from route function and set it for autocomplete text box
 
         showRoutes().then(data => {
 
@@ -138,10 +144,12 @@ class home extends Component {
             })
         });
 
+        //initialize modal
         var elems_modal = document.querySelectorAll('.modal');
         M.Modal.init(elems_modal, {});
     }
 
+    //this method handle text feilds changes
     onChange(e) {
         this.setState({
             [e.target.name]: e.target.value,
@@ -151,14 +159,18 @@ class home extends Component {
         });
     }
 
+    //this method handle form's submit
     onSubmit(e) {
+        //changing button name
         this.setState({
             button: {check: "Checking"}
         });
         e.preventDefault();
 
+        //assign modal into variable
         const instance = M.Modal.getInstance(document.querySelector('#modal1'));
 
+        //setting up formData
         let data = {
             departure: this.state.departure,
             arrival: this.state.arrival,
@@ -197,8 +209,11 @@ class home extends Component {
                     body: "Please Select..."
                 }
             });
+
+            //open the modal
             instance.open();
         }).catch(err => {
+
             this.setState({
                 checkResult: {
                     isActive: false
@@ -211,6 +226,8 @@ class home extends Component {
                     check: "Check"
                 }
             });
+
+            //open the modal
             instance.open();
         })
 
@@ -256,8 +273,8 @@ class home extends Component {
                 <img className="bg" src={process.env.PUBLIC_URL + '/icon/bg.jpg'} alt="bg"/>
 
                 <div className="col s12 m12 z-depth-3 mt-50">
-                    <div className="card  blue-grey lighten-4 mt-50">
-                        <div className="card-content  text-blue-grey text-darken-4">
+                    <div className="card  grey lighten-1 mt-50">
+                        <div className="card-content  blue-grey-text text-darken-5">
                             <form onSubmit={this.onSubmit}>
                                 <div className={"row"}>
                                     <div className="input-field col s6">
@@ -308,6 +325,7 @@ class home extends Component {
                         </div>
                     </div>
                 </div>
+
                 {/*Modal Structure Show Results*/}
                 <div id="modal1" className="modal modal-fixed-footer">
                     <div className="modal-content">

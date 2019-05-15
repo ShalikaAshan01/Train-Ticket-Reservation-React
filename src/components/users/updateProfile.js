@@ -183,7 +183,7 @@ class updateProfile extends Component{
             }
         };
 
-        //if all fields are valid then call the api
+        //if all fields are valid then call the api for update info
         if(this.state.valid && this.state.validEmail && this.state.validFname && this.state.validTelephone && this.state.validLname
         ){
             fn_updateProfile(values,header).then(res => {
