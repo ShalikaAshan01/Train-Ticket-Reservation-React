@@ -7,7 +7,7 @@ import axios from 'axios'
  */
 export const signupFunction = async newUser =>{
     return await axios
-        .post(' http://localhost:3000/users/signup', {
+        .post('/users/signup', {
             firstName: newUser.firstName,
             lastName: newUser.lastName,
             email: newUser.email,
@@ -23,7 +23,7 @@ export const signupFunction = async newUser =>{
  */
 export const signinFunction = async data =>{
     return await axios
-        .post('http://localhost:3000/users/signin', {
+        .post('/users/signin', {
             email: data.email,
             password: data.password,
         });
@@ -37,7 +37,7 @@ export const signinFunction = async data =>{
  */
 export const fn_updateProfile = async (data,header )=>{
     return await axios
-        .patch('http://localhost:3000/users/'+data._id, data,header);
+        .patch('/users/'+data._id, data,header);
 
 };
 /**
@@ -48,7 +48,7 @@ export const fn_updateProfile = async (data,header )=>{
  */
 export const fn_updatePassword = async (data,header )=>{
     return await axios
-        .put('http://localhost:3000/users/'+data._id+'/changepassword', data,header);
+        .put('/users/'+data._id+'/changepassword', data,header);
 
 };
 /**
@@ -58,5 +58,5 @@ export const fn_updatePassword = async (data,header )=>{
  */
 export const validateUser = async data=>{
     return await axios
-        .post('http://localhost:3000/users/'+data._id+"/"+data._token,{})
+        .post('/users/'+data._id+"/"+data._token,{})
 };

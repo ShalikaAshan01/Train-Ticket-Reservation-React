@@ -8,7 +8,7 @@ import axios from 'axios'
  */
 export const addLineFunction = async (data,header) =>{
     return await axios
-        .post(' http://localhost:3000/line', {
+        .post(' /line', {
             line: data.line,
             from: data.from,
             to: data.to,
@@ -22,7 +22,7 @@ export const addLineFunction = async (data,header) =>{
  */
 export const showRoutes = async () =>{
     return await axios
-        .get(' http://localhost:3000/line');
+        .get(' /line');
 
 };
 /**
@@ -32,6 +32,6 @@ export const showRoutes = async () =>{
  */
 export const showRoutesbyLine = async (data) =>{
     return await axios
-        .get('  http://localhost:3000/line/'+data);
+        .get('  /line/'+data);
 
 };

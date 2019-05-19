@@ -6,7 +6,7 @@ import axios from 'axios';
  * @returns {Promise<any>}
  */
 export const fn_addSchedule = async (data) =>{
-    return await axios.post(' http://localhost:3000/schedules', data);
+    return await axios.post(' /schedules', data);
 };
 
 /**
@@ -15,7 +15,7 @@ export const fn_addSchedule = async (data) =>{
  * @returns {Promise<any>}
  */
 export const fn_getSpecificSchedule = async (data) =>{
-    return await axios.get(' http://localhost:3000/schedules/'+data.date+"/"+data._tid);
+    return await axios.get(' /schedules/'+data.date+"/"+data._tid);
 };
 /**
  * this ajax call will make reservation
@@ -25,7 +25,7 @@ export const fn_getSpecificSchedule = async (data) =>{
  */
 
 export const fn_makeReservation = async (data,header) =>{
-    return await axios.put(' http://localhost:3000/schedules/'+data.trainID+"/"+data.date,data,header);
+    return await axios.put(' /schedules/'+data.trainID+"/"+data.date,data,header);
 };
 /**
  * this ajax call can get reservation by userID
@@ -33,6 +33,6 @@ export const fn_makeReservation = async (data,header) =>{
  * @returns {Promise<any>}
  */
 export const fn_getReservationByUID = async (uid) =>{
-    return await axios.get(' http://localhost:3000/schedules/'+uid);
+    return await axios.get(' /schedules/'+uid);
 };
 
