@@ -59,13 +59,13 @@ class login extends Component {
 
                 <div className="row valign-wrapper">
                     <div className="col s2"> </div>
-                    <div className="col s8 offset-s3 valign m8">
+                    <div className="col s8 valign m8">
                         <div className="card z-depth-1 grey lighten-4">
                             <div className="card-content">
 
                                 {/* Card header */}
                                 <div className="center-align">
-                                    <img className="img-responsive" src={logo} alt="logo"/>
+                                    <img className="img-responsive" width="100" src={logo} alt="logo"/>
                                     <h5 className="indigo-text">Please, login into your account</h5>
                                 </div>
 

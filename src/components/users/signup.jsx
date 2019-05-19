@@ -181,7 +181,7 @@ class login extends Component{
 
     render() {
         return(
-          <div className="container">
+          <div className="">
 
             <div className="row valign-wrapper">
                 <div className="col s2"> </div>
@@ -191,7 +191,7 @@ class login extends Component{
 
               {/* Card header */}
               <div className="center-align">
-              <img className="img-responsive" src={logo} alt="logo"/>
+              <img className="img-responsive" width="100" src={logo} alt="logo"/>
                 <h5 className="indigo-text">Create an Account</h5>
               </div>
 
