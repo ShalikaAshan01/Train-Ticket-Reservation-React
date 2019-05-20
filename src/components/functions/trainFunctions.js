@@ -1,5 +1,4 @@
-import axios from 'axios'
-
+import axios from 'axios';
 /**
  * this ajax request will call add train api
  * @param data
@@ -27,7 +26,7 @@ export const fn_getAllTrain = async () =>{
  */
 export const fn_checkAvailability = async (data) =>{
     return await axios
-        .get(' /trains/check/availability',{params:data});
+        .get(process.env.REACT_APP_API+'/trains/check/availability',{params:data});
 
 };
 

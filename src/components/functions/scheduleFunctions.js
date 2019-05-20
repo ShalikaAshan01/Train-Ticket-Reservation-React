@@ -15,7 +15,7 @@ export const fn_addSchedule = async (data) =>{
  * @returns {Promise<any>}
  */
 export const fn_getSpecificSchedule = async (data) =>{
-    return await axios.get(' /schedules/'+data.date+"/"+data._tid);
+    return await axios.get(process.env.REACT_APP_API+'/schedules/'+data.date+"/"+data._tid);
 };
 /**
  * this ajax call will make reservation
