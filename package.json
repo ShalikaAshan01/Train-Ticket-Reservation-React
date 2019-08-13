@@ -11,7 +11,7 @@
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-router-dom": "^5.0.0",
-    "react-scripts": "2.1.8",
+    "react-scripts": "3.1.0",
     "sweetalert": "^2.1.2"
   },
   "proxy": "http://192.168.8.107:8280/api",
